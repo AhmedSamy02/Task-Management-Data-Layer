@@ -12,7 +12,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.lifecycleScope
-import com.example.taskmanagment.testing.testDatabase
+import com.example.taskmanagment.testing.testInsertionInDatabase
+import com.example.taskmanagment.testing.testRetrieveProjectWithTasks
 import com.example.taskmanagment.ui.theme.TaskManagmentTheme
 import kotlinx.coroutines.launch
 
@@ -21,7 +22,8 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         lifecycleScope.launch {
-            testDatabase(applicationContext)
+            testInsertionInDatabase(applicationContext)
+            testRetrieveProjectWithTasks(applicationContext)
         }
         setContent {
             TaskManagmentTheme {

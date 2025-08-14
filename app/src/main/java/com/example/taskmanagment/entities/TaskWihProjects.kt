@@ -7,9 +7,13 @@ import androidx.room.Relation
 data class TaskWihProjects(
     @Embedded val task: Task,
     @Relation(
-        parentColumn = "taskId",
-        entityColumn = "projectId",
-        associateBy = Junction(ProjectTaskCrossRef::class)
+        parentColumn = "id",
+        entityColumn = "id",
+        associateBy = Junction(
+            ProjectTaskCrossRef::class,
+            parentColumn = "taskId",
+            entityColumn = "projectId",
+        )
     )
     val projects: List<Project>
 )

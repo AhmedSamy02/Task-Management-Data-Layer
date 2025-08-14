@@ -6,10 +6,11 @@ import android.util.Log
 import com.example.taskmanagment.database.AppDatabase
 import com.example.taskmanagment.entities.Attachment
 import com.example.taskmanagment.entities.Project
+import com.example.taskmanagment.entities.ProjectTaskCrossRef
 import com.example.taskmanagment.entities.Task
 import com.example.taskmanagment.entities.User
 
-suspend fun testDatabase(context: Context) {
+suspend fun testInsertionInDatabase(context: Context) {
     Log.d("DB_TEST", "--- Start of testing ---")
     val db = AppDatabase.getDatabase(context)
 
@@ -50,10 +51,18 @@ suspend fun testDatabase(context: Context) {
         Log.d("DB_TEST", "Task added $task1")
         val task2 = Task(
             description = "Implement Home screen",
-            projectId = 2
+            projectId = 1
         )
         db.taskDao().add(task2)
+
         Log.d("DB_TEST", "Task added $task2")
+        val task3 = Task(
+            description = "Implement Profile screen",
+            projectId = 2
+        )
+        db.taskDao().add(task3)
+        Log.d("DB_TEST", "Task added $task3")
+
     } catch (e: SQLiteConstraintException) {
         Log.d("DB_TEST", "Failed to add Task ${e.localizedMessage}")
     }
@@ -67,6 +76,33 @@ suspend fun testDatabase(context: Context) {
     } catch (e: SQLiteConstraintException) {
         Log.d("DB_TEST", "Failed to add Attachment ${e.localizedMessage}")
     }
-    Log.d("DB_TEST", "--- End of testing ---")
+    try {
+        val projectTaskDao = db.projectTaskDao()
+        projectTaskDao.add(ProjectTaskCrossRef(1, 1))
+        projectTaskDao.add(ProjectTaskCrossRef(1, 2))
+        projectTaskDao.add(ProjectTaskCrossRef(2, 3))
+    } catch (e: Exception) {
 
+    }
+    Log.d("DB_TEST", "--- End of testing ---")
+}
+
+suspend fun testRetrieveProjectWithTasks(context: Context) {
+    try {
+        val db = AppDatabase.getDatabase(context)
+        val projectDao = db.projectDao()
+        val taskInProject = projectDao.getProjectsWithTasks()
+        taskInProject.forEach {
+            Log.d("DB_TEST", "For project ${it.project} Tasks are = ${it.tasks}")
+        }
+        Log.d("DB_TEST", "------ Trying function getTasksOfProject on project with id = 1 ------")
+        projectDao.getTasksOfProject(1).forEach {
+            Log.d("DB_TEST", "Task = $it")
+        }
+
+
+    } catch (e: SQLiteConstraintException) {
+        Log.d("DB_TEST", "Failed to in retrieving ${e.localizedMessage}")
+
+    }
 }
