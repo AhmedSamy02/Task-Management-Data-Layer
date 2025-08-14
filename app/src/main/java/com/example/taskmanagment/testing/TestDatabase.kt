@@ -247,11 +247,17 @@ suspend fun testQueryVsRawQuery(context: Context) {
 
     }
     var start = System.nanoTime()
+    for (i in 1..99) {
+        dao.getProjectsWithMoreThan3Tasks()
+    }
     var res = dao.getProjectsWithMoreThan3Tasks()
     var time = System.nanoTime() - start
     Log.d("PERF", "Result of Room query: $res")
     Log.d("PERF", "Room query: ${time}ns --> ${time / 1000000} ms")
     start = System.nanoTime()
+    for (i in 1..99) {
+        dao.getProjectsWithMoreThan3TasksRaw(getProjectsWithMoreThan3TasksQuery)
+    }
     res = dao.getProjectsWithMoreThan3TasksRaw(getProjectsWithMoreThan3TasksQuery)
     time = System.nanoTime() - start
     Log.d("PERF", "Result of Raw query: $res")
