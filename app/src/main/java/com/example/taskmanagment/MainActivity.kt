@@ -12,20 +12,24 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.lifecycleScope
+import com.example.taskmanagment.database.AppDatabase
 import com.example.taskmanagment.testing.testInsertionInDatabase
+import com.example.taskmanagment.testing.testQueryVsRawQuery
 import com.example.taskmanagment.testing.testRetrieveProjectWithTasks
 import com.example.taskmanagment.testing.testSuspendVsFlow
 import com.example.taskmanagment.ui.theme.TaskManagmentTheme
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        lifecycleScope.launch {
+        lifecycleScope.launch(Dispatchers.IO) {
             testInsertionInDatabase(applicationContext)
             testRetrieveProjectWithTasks(applicationContext)
             testSuspendVsFlow(applicationContext)
+            testQueryVsRawQuery(applicationContext)
         }
         setContent {
             TaskManagmentTheme {
