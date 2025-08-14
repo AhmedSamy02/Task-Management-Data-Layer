@@ -9,7 +9,13 @@ import com.example.taskmanagment.entities.Project
 import com.example.taskmanagment.entities.ProjectTaskCrossRef
 import com.example.taskmanagment.entities.Task
 import com.example.taskmanagment.entities.User
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.take
+import kotlinx.coroutines.launch
 
+/** Req 2.2.**/
 suspend fun testInsertionInDatabase(context: Context) {
     Log.d("DB_TEST", "--- Start of testing ---")
     val db = AppDatabase.getDatabase(context)
@@ -87,6 +93,7 @@ suspend fun testInsertionInDatabase(context: Context) {
     Log.d("DB_TEST", "--- End of testing ---")
 }
 
+/** Req 2.3. **/
 suspend fun testRetrieveProjectWithTasks(context: Context) {
     try {
         val db = AppDatabase.getDatabase(context)
@@ -105,4 +112,23 @@ suspend fun testRetrieveProjectWithTasks(context: Context) {
         Log.d("DB_TEST", "Failed to in retrieving ${e.localizedMessage}")
 
     }
+}
+
+/** Req 2.4. **/
+suspend fun testSuspendVsFlow(context: Context) {
+    val dao = AppDatabase.getDatabase(context).projectDao()
+    var projects = dao.getAllProjectsOnce()
+    Log.d("DAO_TEST", "Suspend projects: $projects")
+    val job = GlobalScope.launch(Dispatchers.IO) {
+        dao.getAllProjectsFlow()
+            .collect {
+                projects = it
+                Log.d("DAO_TEST", "Flow emission: $it")
+            }
+    }
+    delay(2000)
+    job.cancel()
+    Log.d("DAO_TEST", "Flow emission: Closed")
+
+
 }

@@ -10,6 +10,7 @@ import com.example.taskmanagment.entities.Project
 import com.example.taskmanagment.entities.ProjectWithTasks
 import com.example.taskmanagment.entities.Task
 import com.example.taskmanagment.entities.TaskWihProjects
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface ProjectDAO {
@@ -23,7 +24,10 @@ interface ProjectDAO {
     suspend fun update(project: Project)
 
     @Query("Select * FROM Project")
-    suspend fun getAll(): List<Project>
+    suspend fun getAllProjectsOnce(): List<Project>
+
+    @Query("Select * FROM Project")
+    fun getAllProjectsFlow(): Flow<List<Project>>
 
     @Transaction
     @Query("Select * FROM Project")

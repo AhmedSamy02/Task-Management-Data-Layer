@@ -14,6 +14,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.lifecycleScope
 import com.example.taskmanagment.testing.testInsertionInDatabase
 import com.example.taskmanagment.testing.testRetrieveProjectWithTasks
+import com.example.taskmanagment.testing.testSuspendVsFlow
 import com.example.taskmanagment.ui.theme.TaskManagmentTheme
 import kotlinx.coroutines.launch
 
@@ -24,6 +25,7 @@ class MainActivity : ComponentActivity() {
         lifecycleScope.launch {
             testInsertionInDatabase(applicationContext)
             testRetrieveProjectWithTasks(applicationContext)
+            testSuspendVsFlow(applicationContext)
         }
         setContent {
             TaskManagmentTheme {
